@@ -14,11 +14,12 @@
   ],
   "scripts": {
     "lint": "eslint benchmark.js arangodb mongodb orientdb neo4j",
-    "data": "gunzip < data/bodies100000.json.gz > data/bodies100000.json"
+    "data": "gunzip < data/bodies100000.json.gz > data/bodies100000.json",
+    "start": "lite-server"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/weinberger/TBA"
+    "url": "git+https://github.com/weinberger/TBA.git"
   },
   "author": "Claudius Weinberger <claudius@arangodb.com>",
   "license": "Apache-2.0",
@@ -29,14 +30,17 @@
     "eslint": "^0.22.1"
   },
   "dependencies": {
-    "arangojs": "^3.8.1",
-    "async": "^1.3.0",
-    "bluebird": "^2.9.30",
-    "mongodb": "^2.0.33",
-    "neo4j": "^2.0.0-RC1",
+    "arangojs": "^5.7.0",
+    "async": "^2.5.0",
+    "bluebird": "^3.5.1",
+    "lite-server": "^2.3.0",
+    "mongodb": "^2.2.33",
+    "neo4j": "^2.0.0-alpha5",
+    "npm-check-updates": "^2.13.0",
     "orientjs": "^2.0.0",
     "pg-promise": "^1.8.0",
     "underscore": "^1.8.3",
     "yargs": "^3.9.0"
-  }
+  },
+  "homepage": "https://github.com/weinberger/TBA#readme"
 }

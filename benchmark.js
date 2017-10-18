@@ -132,15 +132,15 @@ desc.startup(host, function (db) {
   });
 
   for (var j = 0; j < tests.length; ++j) {
+      
     var test = tests[j];
-
+    console.log('INFO performing test '+test);
     if (test === 'warmup') {
       testRuns.push(function (resolve, reject) {
         var start = Date.now();
         desc.warmup(db, function (err) {
           if (err) return reject(err);
-          reportResult(desc.name, 'warmup', 0, Date.now() - start);
-              
+          reportResult(desc.name, 'warmup', 0, Date.now() - start);    
           return resolve();
         });
       });
@@ -309,8 +309,8 @@ function benchmarkSingleWrite(desc, db, resolve, reject) {
                     }
 
                   return cb(null);
-                });
-              },
+                 });
+             },
 
               function (err) {
                 if (err) return reject(err);
@@ -512,7 +512,6 @@ function benchmarkNeighbors(desc, db, resolve, reject) {
 
 function benchmarkNeighbors2(desc, db, resolve, reject) {
   console.log('INFO executing distinct neighbors of 1st and 2nd degree for %d elements', neighbors);
-  
   var nameP = 'profiles';
   var nameR = 'relations';
 

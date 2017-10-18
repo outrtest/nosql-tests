@@ -79,7 +79,7 @@ module.exports = {
   neighbors: function (db, collP, collR, id, i, cb) {
     collR.find({_from: id}).toArray(function (err, result) {
       if (err) return cb(err);
-      
+
       result = result.map(function (e) { return e._to.substr(2); });
 
       cb(null, result.length);
@@ -97,20 +97,20 @@ module.exports = {
         {$match: {_from: {$in: result}}},
         {$group: {_id: null, _to: {$addToSet: '$_to'}}},
         {$project: {_id: 0, neighbors: {$setUnion: ['$_to', result]}}}]).toArray(function (err, result2) {
-          if (err) return cb(err);
+        if (err) return cb(err);
 
-          if (result2.length === 1) {
-            result2 = result2[0].neighbors;
-            if (result2.indexOf(id) === -1) {
-              cb(null, result2.length);
-            }
-            else {
-              cb(null, result2.length - 1);
-            }
-          } else {
-            cb(null, 0);
+        if (result2.length === 1) {
+          result2 = result2[0].neighbors;
+          if (result2.indexOf(id) === -1) {
+            cb(null, result2.length);
           }
-        });
+          else {
+            cb(null, result2.length - 1);
+          }
+        } else {
+          cb(null, 0);
+        }
+      });
     });
   },
 
@@ -126,26 +126,26 @@ module.exports = {
         {$match: {_from: {$in: result}}},
         {$group: {_id: null, _to: {$addToSet: '$_to'}}},
         {$project: {_id: 0, neighbors: {$setUnion: ['$_to', result]}}}]).toArray(function (err, result2) {
-          if (err) return cb(err);
+        if (err) return cb(err);
 
-          if (result2.length === 1) {
-            result2 = result2[0].neighbors;
-            
-            if (result2.indexOf(id) === -1) {
-              count = resul2.length;
-            }
-            else {
-              count = result2.length - 1;
-            }
-            collP.find({_id: {$in: result2}}).toArray(function (err, result3) {
-              if (err) return cb(err);
+        if (result2.length === 1) {
+          result2 = result2[0].neighbors;
 
-              cb(null, count);
-            });
-          } else {
-            cb(null, 0);
+          if (result2.indexOf(id) === -1) {
+            count = resul2.length;
           }
-        });
+          else {
+            count = result2.length - 1;
+          }
+          collP.find({_id: {$in: result2}}).toArray(function (err, result3) {
+            if (err) return cb(err);
+
+            cb(null, count);
+          });
+        } else {
+          cb(null, 0);
+        }
+      });
     });
   }
 };

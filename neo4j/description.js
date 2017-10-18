@@ -17,7 +17,7 @@ module.exports = {
     cb(db);
   },
 
- warmup: function (db, cb) {
+  warmup: function (db, cb) {
     db.cypher({query: 'MATCH (:PROFILES)--() return count(*) as count'},
       function (err, result) {
         if (err) return cb(err);
@@ -45,108 +45,108 @@ module.exports = {
 
   getDocument: function (db, coll, id, cb) {
     db.cypher({query: 'MATCH (f:' + coll + ' {_key:{key}}) RETURN f',
-               params: {key: id},
-               headers: {Connection: 'keep-alive'},
-               lean: true}, cb);
+      params: {key: id},
+      headers: {Connection: 'keep-alive'},
+      lean: true}, cb);
   },
 
   saveDocumentSync: function (db, coll, doc, cb) {
     db.cypher({query: 'CREATE (f:' + coll + ' {doc})',
-               params: {doc: doc},
-               headers: {Connection: 'keep-alive'},
-               lean: true}, cb);
+      params: {doc: doc},
+      headers: {Connection: 'keep-alive'},
+      lean: true}, cb);
   },
 
   aggregate: function (db, coll, cb) {
     db.cypher({query: 'MATCH (f:' + coll + ') RETURN f.AGE, count(*)',
-               headers: {Connection: 'keep-alive'},
-               lean: true},
+      headers: {Connection: 'keep-alive'},
+      lean: true},
 
-              function (err, result) {
-                if (err) return cb(err);
+    function (err, result) {
+      if (err) return cb(err);
 
-                cb(null, result.length);
-              });
+      cb(null, result.length);
+    });
   },
 
   neighbors: function (db, collP, collR, id, i, cb) {
     db.cypher({query: 'MATCH (s:' + collP + ' {_key:{key}})-->(n:' + collP + ') RETURN n._key',
-               params: {key: id},
-               headers: {Connection: 'keep-alive'},
-               lean: true},
+      params: {key: id},
+      headers: {Connection: 'keep-alive'},
+      lean: true},
 
-              function (err, result) {
-                if (err) return cb(err);
+    function (err, result) {
+      if (err) return cb(err);
 
-                if (result.length === undefined) cb(null, 1);
-                else cb(null, result.length);
-              });
+      if (result.length === undefined) cb(null, 1);
+      else cb(null, result.length);
+    });
   },
 
   neighbors2: function (db, collP, collR, id, i, cb) {
     db.cypher({query: 'MATCH (s:' + collP + ' {_key:{key}})-[*1..2]->(n:'
                       + collP + ') RETURN DISTINCT n._key',
-               params: {key: id},
-               headers: {Connection: 'keep-alive'},
-               lean: true},
+    params: {key: id},
+    headers: {Connection: 'keep-alive'},
+    lean: true},
 
-              function (err, result) {
-                if (err) return cb(err);
+    function (err, result) {
+      if (err) return cb(err);
 
-                if (result.map === undefined) {
-                  result = [result['n._key']];
-                }
-                else {
-                  result = result.map(function (x) { return x['n._key']; });
-                }
+      if (result.map === undefined) {
+        result = [result['n._key']];
+      }
+      else {
+        result = result.map(function (x) { return x['n._key']; });
+      }
 
-                if (result.indexOf(id) === -1) {
-                  cb(null, result.length);
-                }
-                else {
-                  cb(null, result.length - 1);
-                }
-              });
+      if (result.indexOf(id) === -1) {
+        cb(null, result.length);
+      }
+      else {
+        cb(null, result.length - 1);
+      }
+    });
   },
 
   neighbors2data: function (db, collP, collR, id, i, cb) {
     db.cypher({query: 'MATCH (s:' + collP + ' {_key:{key}})-[*1..2]->(n:'
                       + collP + ') RETURN DISTINCT n._key, n',
-               params: {key: id},
-               headers: {Connection: 'keep-alive'},
-               lean: true},
+    params: {key: id},
+    headers: {Connection: 'keep-alive'},
+    lean: true},
 
-              function (err, result) {
-                if (err) return cb(err);
+    function (err, result) {
+      if (err) return cb(err);
 
-                if (result.map === undefined) {
-                  result = [result['n._key']];
-                }
-                else {
-                  result = result.map(function (x) { return x['n._key']; });
-                }
+      if (result.map === undefined) {
+        result = [result['n._key']];
+      }
+      else {
+        result = result.map(function (x) { return x['n._key']; });
+      }
 
-                if (result.indexOf(id) === -1) {
-                  cb(null, result.length);
-                }
-                else {
-                  cb(null, result.length - 1);
-                }
-              });
+      if (result.indexOf(id) === -1) {
+        cb(null, result.length);
+      }
+      else {
+        cb(null, result.length - 1);
+      }
+    });
   },
-  
+
   shortestPath: function (db, collP, collR, path, i, cb) {
     db.cypher({query: 'MATCH (s:' + collP + ' {_key:{from}}),(t:'
                       + collP + ' {_key:{to}}), p = shortestPath((s)-[*..15]->(t)) RETURN [x in nodes(p) | x._key] as path',
-               params: {from: path.from, to: path.to},
-               headers: {Connection: 'keep-alive'},
-               lean: true},
+    params: {from: path.from, to: path.to},
+    headers: {Connection: 'keep-alive'},
+    lean: true},
 
-              function (err, result) {
-                if (err) return cb(err);
+    function (err, result) {
+      if (err) return cb(err);
 
-                if (result.length === 0) {cb(null, 0);}
-                else {cb(null, (result[0].path.length - 1));}
-              });
+      if (result.length === 0) {cb(null, 0);}
+      else {cb(null, (result[0].path.length - 1));}
+    });
   }
 };
